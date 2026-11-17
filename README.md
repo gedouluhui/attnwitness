@@ -1,12 +1,14 @@
 # AttnWitness
 
+[![Tests](https://github.com/gedouluhui/attnwitness/actions/workflows/ci.yml/badge.svg)](https://github.com/gedouluhui/attnwitness/actions/workflows/ci.yml)
+
 **Your mask runs. Does it express your attention contract?**
 
 AttnWitness checks an actual attention mask against separately declared token visibility. It returns concrete query–key witnesses, an offline interactive evidence grid, and a bounded counterexample reducer.
 
 No model download, GPU or API key is needed. Experimental v0.1: this is a **hard-visibility contract checker**, not a proof of model quality or whole-model causality.
 
-[Recorded example](docs/index.html) · [中文快速开始](README.zh-CN.md) · [Verification scope](docs/VALIDATION.md)
+[Open the recorded demo](https://gedouluhui.github.io/attnwitness/) · [中文快速开始](README.zh-CN.md) · [Verification scope](docs/VALIDATION.md)
 
 ## The two-token mistake
 

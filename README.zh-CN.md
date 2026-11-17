@@ -48,4 +48,4 @@ python -m pip install ".[torch]"
 
 运行测试：`python -m unittest discover -s tests -v`。测试包含真实 CPU SDPA/MHA 对照、独立手算结果、受控源码副本变异、HTML 注入与输入指纹回归。
 
-[英文说明](README.md) · [离线记录示例](docs/index.html) · [验证范围](docs/VALIDATION.md)
+[英文说明](README.md) · [在线记录示例](https://gedouluhui.github.io/attnwitness/) · [验证范围](docs/VALIDATION.md)
