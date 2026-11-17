@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "status": "VIOLATION",
+  "scope": "Hard visibility under the declared contract, not model or training correctness.",
+  "findings": [
+    {
+      "category": "forbidden_edge",
+      "batch": 0,
+      "head": 0,
+      "query_id": "first",
+      "key_id": "second",
+      "query_index": 0,
+      "key_index": 1
+    }
+  ],
+  "violation_count": 1,
+  "findings_truncated": false,
+  "coverage": {
+    "backend": "sdpa",
+    "batch_size": 1,
+    "heads": 1,
+    "length": 2,
+    "total_cells": 4,
+    "constrained_cells": 4,
+    "complete_relation_contract": true,
+    "nonempty_queries": 2,
+    "unconstrained_cells": 0
+  },
+  "preview": {
+    "batch": 0,
+    "head": 0,
+    "ids": [
+      "first",
+      "second"
+    ],
+    "visible": [
+      [
+        true,
+        true
+      ],
+      [
+        true,
+        true
+      ]
+    ],
+    "expected": [
+      [
+        1,
+        -1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "truncated": false
+  },
+  "source": {
+    "kind": "bundled synthetic example",
+    "case": "float-mask"
+  }
+}

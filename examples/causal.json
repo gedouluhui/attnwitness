@@ -1,0 +1,8 @@
+{
+  "mode": "causal",
+  "backend": "sdpa",
+  "tokens": [
+    {"id": "first", "segment": "document", "position": 0},
+    {"id": "second", "segment": "document", "position": 1}
+  ]
+}
