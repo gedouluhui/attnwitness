@@ -22,7 +22,7 @@ No claim of complete independent final sign-off is made. No known runtime defect
 
 ## Environment and limits
 
-Development verification used Windows, Python 3.12, NumPy 2.x and PyTorch 2.12 CPU. The 0.2 candidate runs 68 tests with no failures; a fresh environment installed the built wheel and ran its console demo outside the source checkout, reporting installed version 0.2.0. The normal and deliberately broken CLI examples also ran outside the checkout, with their JSON/HTML reread and exit codes checked. That fresh environment inherited the machine's optional PyTorch installation rather than downloading a separate CPU build.
+Development verification used Windows, Python 3.12, NumPy 2.x and PyTorch 2.12 CPU. The 0.2.1 candidate runs 68 tests with no failures; a fresh environment installed the built wheel and ran its console demo outside the source checkout, reporting installed version 0.2.1. The normal and deliberately broken CLI examples also ran outside the checkout, with their JSON/HTML reread and exit codes checked. That fresh environment inherited the machine's optional PyTorch installation rather than downloading a separate CPU build.
 
 [GitHub CI run 44188829196](https://github.com/gedouluhui/attnwitness/actions/runs/44188829196) passed on commit `7eb6277`: all four Python 3.11/3.12 × Windows/Linux jobs succeeded. This is evidence for that commit and those environments, not every possible dependency version. The public Pages example was opened in a browser and its actual cell-click handler verified; responsive checks covered 1440 and 360 CSS pixels. These are owner-run checks, not an external user study.
 

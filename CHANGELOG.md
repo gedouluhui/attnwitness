@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Checkout recorded examples with LF line endings on every platform so the byte-for-byte reproduction test also passes on Windows CI. No runtime behavior changed from 0.2.0.
+
 ## 0.2.0
 
 - MHA floating attention and key-padding masks are summed in their declared dtype before hard-visibility classification, matching actual backend composition; overflow to `-inf` blocks, while `NaN` and positive infinity make the input invalid. Mixed floating dtypes are rejected rather than guessed.
