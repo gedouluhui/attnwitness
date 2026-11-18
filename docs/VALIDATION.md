@@ -1,6 +1,6 @@
 # Verification scope
 
-This is an experimental first release. Functional tests, independent review and external adoption are different kinds of evidence.
+This is an experimental 0.2 release. Functional tests, independent review and external adoption are different kinds of evidence.
 
 ## Executable checks
 
@@ -10,7 +10,7 @@ python -m unittest discover -s tests -v
 python -m build
 ```
 
-The suite checks independently specified causal/packed/prefix relations, boolean encoding polarity, additive-mask semantics, per-batch/head identity, partial coverage, empty-row policy, rejection before large array operations, real CPU SDPA/MHA effects, reducer identity and budget behavior, report injection handling, CLI exit codes, input preservation and the binding of fingerprints to loaded bytes.
+The suite checks independently specified causal/packed/prefix relations, boolean encoding polarity, additive-mask semantics, per-batch/head identity, partial coverage, empty-row policy, rejection before large array operations, real CPU SDPA/MHA effects, reducer identity and budget behavior, report injection handling, CLI exit codes, input preservation and the binding of fingerprints to loaded bytes. The 0.2 additions cover floating MHA attention plus key-padding summation against an actual `MultiheadAttention` call, positive-overflow rejection, mixed-dtype rejection, tiled exact counts across tile sizes, late out-of-preview witnesses with their own batch/head context, exact counters under an evidence cap, broadcast workloads without full expanded temporaries, and real hard-link/race publication controls.
 
 Mutation checks operate only on temporary source copies. A baseline must pass; the intended edit must be unique and nonempty; the mutated run must fail at a named behavioral assertion. A syntax/import error is not accepted as catching a silent bug.
 
@@ -22,7 +22,7 @@ No claim of complete independent final sign-off is made. No known runtime defect
 
 ## Environment and limits
 
-Development verification used Windows, Python 3.12, NumPy 2.x and PyTorch 2.12 CPU. A clean venv with Python 3.12.3, NumPy 2.5.5 and torch 2.12.0+cpu ran the installed package's 47-test suite with no failures or skips. The normal and deliberately broken CLI examples also ran outside the checkout, with their JSON/HTML reread and exit codes checked.
+Development verification used Windows, Python 3.12, NumPy 2.x and PyTorch 2.12 CPU. The 0.2 candidate runs 68 tests with no failures; a fresh environment installed the built wheel and ran its console demo outside the source checkout, reporting installed version 0.2.0. The normal and deliberately broken CLI examples also ran outside the checkout, with their JSON/HTML reread and exit codes checked. That fresh environment inherited the machine's optional PyTorch installation rather than downloading a separate CPU build.
 
 [GitHub CI run 44188829196](https://github.com/gedouluhui/attnwitness/actions/runs/44188829196) passed on commit `7eb6277`: all four Python 3.11/3.12 × Windows/Linux jobs succeeded. This is evidence for that commit and those environments, not every possible dependency version. The public Pages example was opened in a browser and its actual cell-click handler verified; responsive checks covered 1440 and 360 CSS pixels. These are owner-run checks, not an external user study.
 

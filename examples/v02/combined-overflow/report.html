@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>AttnWitness — VIOLATION</title><style>
+:root{color-scheme:light;--ink:#1b263b;--muted:#607089;--line:#d5deeb;--paper:#f7f9fc;--blue:#2e55cc;--red:#b2384a;--green:#166b59}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.65 'Segoe UI',Arial,sans-serif}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.shell{max-width:1220px;margin:auto;padding:30px 38px 60px}.top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:22px;gap:20px}.brand{font:700 24px Bahnschrift,'Segoe UI',sans-serif;letter-spacing:-.6px}.brand span{color:var(--blue)}.meta,.eyebrow{font:12px Consolas,monospace;letter-spacing:.1em;color:var(--muted)}.hero{padding:40px 0 30px;max-width:850px}h1{font:600 clamp(32px,4.2vw,52px)/1.1 Bahnschrift,'Segoe UI',sans-serif;letter-spacing:-1.4px;margin:16px 0}.hero p{color:var(--muted);max-width:740px}.badge{display:inline-block;font:700 12px Consolas,monospace;letter-spacing:.07em;padding:5px 10px;border:1px solid currentColor;border-radius:4px;white-space:nowrap}.bad{color:var(--red)}.good{color:var(--green)}
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:22px}.card{background:white;border:1px solid var(--line);border-radius:10px;padding:24px;min-width:0}.card h2{font-size:18px;margin:0 0 6px}.caption{font-size:13px;color:var(--muted)}.matrix-wrap{overflow:auto;margin:22px 0 16px;max-height:640px}.matrix{border-collapse:separate;border-spacing:5px}.matrix th{font:11px Consolas,monospace;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);padding:4px}.matrix th[scope=row]{text-align:right}.matrix .index{color:var(--ink);font-weight:700}.cell{width:36px;height:36px;border:1px solid #d5deeb;border-radius:5px;background:#edf2fb;color:#385287;font:13px Consolas,monospace;text-align:center;vertical-align:middle;padding:0}button.cell{display:inline-flex;align-items:center;justify-content:center}.cell.blocked{background:#fafbfc;color:#758294}.cell.conflict{background:#fce9ee;border-color:#ce7b8b;color:#9f2038}.cell.free{border-style:dashed}.cell:hover{outline:2px solid var(--blue)}.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted)}.legend i{display:inline-block;width:10px;height:10px;margin-right:5px;border-radius:2px;background:#edf2fb;border:1px solid #d5deeb}.legend .red{background:#fce9ee;border-color:#ce7b8b}.inspector{background:#eef3f9;padding:14px;border-radius:6px;min-height:70px;margin-top:18px;overflow-wrap:anywhere;font:13px/1.7 Consolas,monospace}.facts{margin:20px 0}.facts div{display:flex;justify-content:space-between;gap:15px;padding:10px 0;border-bottom:1px solid #e9edf4}.facts dt{color:var(--muted)}.facts dd{margin:0;font-family:Consolas,monospace}.note{border-left:3px solid var(--blue);padding:0 0 0 15px;margin-top:24px;font-size:13px}.note.warn{border-left-color:var(--red)}code{font-family:Consolas,monospace;font-size:.95em}
+.witnesses{margin-top:24px}.witness{border-top:1px solid #e6ebf3;padding-top:16px;margin-top:18px}.witness[hidden]{display:none}.witness h3{font:600 16px/1.45 Bahnschrift,'Segoe UI',sans-serif;margin:10px 0 4px;overflow-wrap:anywhere}.witness-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.witness .matrix-wrap{margin:14px 0 10px;max-height:420px}.witness .matrix .cell{width:34px;height:34px}.witness .empty,.witness-empty{margin-top:14px}
+.findings{margin-top:24px}.filters{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.filter,.download{border:1px solid var(--line);background:white;border-radius:5px;padding:7px 11px;color:var(--ink)}.filter[aria-pressed=true]{background:#eaf0ff;border-color:var(--blue);color:var(--blue)}.finding{padding:14px 10px;border:1px solid transparent;border-top:1px solid #e6ebf3;border-radius:4px;display:grid;grid-template-columns:160px minmax(0,1fr) 130px;gap:12px;font-size:13px;align-items:center}.finding[hidden]{display:none}button.finding{background:white;color:inherit;width:100%;text-align:left;border-radius:0}.finding:hover{background:#f5f8ff}.finding[aria-expanded=true]{background:#eaf0ff;border-left:3px solid var(--blue)}.edge{font-family:Consolas,monospace;overflow-wrap:anywhere}.location{color:var(--muted)}.open-hint{display:block;font:11px Consolas,monospace;color:var(--blue)}.empty{padding:20px;border:1px dashed var(--line);border-radius:6px;color:var(--muted)}details{margin-top:22px}summary{cursor:pointer;font-size:13px;color:var(--muted)}pre{overflow:auto;max-height:360px;background:#edf2f8;padding:14px;border-radius:6px;font-size:12px}.footer{margin-top:30px;border-top:1px solid var(--line);padding-top:18px;font-size:12px;color:var(--muted)}@media(max-width:760px){.shell{padding:20px 16px 40px}.layout{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column;gap:8px}.hero{padding-top:26px}.card{padding:18px}.finding{grid-template-columns:1fr;gap:2px}.witness .matrix .cell{width:30px;height:30px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head><body><main class="shell">
+<header class="top"><div class="brand">Attn<span>Witness</span></div><div class="meta">ATTENTION CONTRACT / LOCAL EVIDENCE</div></header>
+<section class="hero"><span class="badge bad">VIOLATION</span><h1>A visibility contract needs attention.</h1>
+<p>Inspect the exact relation between an attention mask and the visibility you declared. No model download. No remote API. No hidden verdict.</p></section>
+<div class="layout"><section class="card"><h2>Query → key evidence</h2><div class="caption">Preview · batch 0 / head 0</div>
+<div class="matrix-wrap"><table class="matrix"><thead><tr><th>query / key</th><th scope="col" title="x">x</th><th scope="col" title="y">y</th></tr></thead><tbody><tr><th scope="row" title="x">x</th><td><button class="cell" data-message="x → x: visible; declaration: must permit." aria-label="x → x: visible; declaration: must permit.">1</button></td><td><button class="cell blocked conflict" data-message="x → y: blocked; declaration: must permit." aria-label="x → y: blocked; declaration: must permit.">!</button></td></tr><tr><th scope="row" title="y">y</th><td><button class="cell" data-message="y → x: visible; declaration: must permit." aria-label="y → x: visible; declaration: must permit.">1</button></td><td><button class="cell" data-message="y → y: visible; declaration: must permit." aria-label="y → y: visible; declaration: must permit.">1</button></td></tr></tbody></table></div>
+<div class="legend"><span><i></i>1 visible / 0 blocked</span><span><i class="red"></i>! contract violation</span><span>Dashed: unconstrained</span></div>
+<div class="inspector" id="inspector" aria-live="polite">Click a cell to inspect its declared and observed relation.</div></section>
+<aside class="card"><div class="eyebrow">WHAT WAS CHECKED</div><h2>Coverage, not a blanket proof</h2><dl class="facts"><div><dt>Mask encoding</dt><dd>mha</dd></div><div><dt>Batches</dt><dd>1</dd></div><div><dt>Heads</dt><dd>1</dd></div><div><dt>Relation cells</dt><dd>4</dd></div><div><dt>Checked cells</dt><dd>4</dd></div><div><dt>Declared cells</dt><dd>4</dd></div><div><dt>Unconstrained</dt><dd>0</dd></div><div><dt>Largest tile cells</dt><dd>4</dd></div><div><dt>Sampling</dt><dd>none — exact</dd></div></dl>
+<div class="note">Every relation cell in this shape carried a declaration. A PASS covers only these declarations. It does not prove model quality, whole-model causality or numerical safety of empty attention rows.</div></aside></div>
+<section class="card witnesses"><h2>Witness context</h2><div class="caption">Each retained finding opens a window at its own batch, head and original indices; no preview substitution.</div>
+<article class="witness" id="witness-0" data-witness-panel="0" hidden><header class="witness-head"><span class="badge bad">MISSING EDGE</span><span class="caption">finding 1 of 1</span></header><h3>B0 · H0 · q0 → k1</h3><p class="caption">Witness panel: original coordinates, not the preview window. Query <code>x</code> · key <code>y</code>.</p><div class="matrix-wrap"><table class="matrix witness-matrix"><thead><tr><th>query / key</th><th scope="col" title="key 0"><span class="index">0</span> x</th><th scope="col" title="key 1"><span class="index">1</span> y</th></tr></thead><tbody><tr><th scope="row" title="query 0"><span class="index">0</span> x</th><td class="cell" title="x → x: visible; declaration: must permit." aria-label="x → x: visible; declaration: must permit.">1</td><td class="cell blocked conflict" title="x → y: blocked; declaration: must permit." aria-label="x → y: blocked; declaration: must permit.">!</td></tr><tr><th scope="row" title="query 1"><span class="index">1</span> y</th><td class="cell" title="y → x: visible; declaration: must permit." aria-label="y → x: visible; declaration: must permit.">1</td><td class="cell" title="y → y: visible; declaration: must permit." aria-label="y → y: visible; declaration: must permit.">1</td></tr></tbody></table></div><p class="caption">Hard visibility: boolean masks are visibility as reported by the backend; float masks are additive scores where only <code>-inf</code> blocks. MHA attention and key-padding masks are summed in the mask dtype before this judgement; a sum producing NaN or +inf makes the input invalid. Finite negative scores remain visible.</p></article><div class="empty witness-empty" id="witness-empty">Select a finding below to open its own batch/head context with original row and column indices. Selection works with mouse, Enter or Space.</div><p class="caption" id="witness-count"></p></section>
+<section class="card findings"><h2>Concrete findings · 1</h2><div class="filters"><button class="filter" data-filter="all" data-count="1" aria-pressed="true">All findings · 1</button><button class="filter" data-filter="forbidden_edge" data-count="0" aria-pressed="false">Forbidden edges · 0</button><button class="filter" data-filter="missing_edge" data-count="1" aria-pressed="false">Missing edges · 1</button><button class="filter" data-filter="empty_query" data-count="0" aria-pressed="false">Empty queries · 0</button></div>
+<button class="finding" data-category="missing_edge" data-witness="0" aria-controls="witness-0" aria-expanded="false"><strong>missing edge</strong><span class="edge">x → y</span><span class="location">B0 / H0 · q0 / k1<span class="open-hint">open context</span></span></button></section>
+<details><summary>Machine-readable evidence and input fingerprints</summary><pre id="report-json">{
+  &quot;schema_version&quot;: 1,
+  &quot;status&quot;: &quot;VIOLATION&quot;,
+  &quot;scope&quot;: &quot;Hard visibility under the declared contract, not model or training correctness.&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;category&quot;: &quot;missing_edge&quot;,
+      &quot;batch&quot;: 0,
+      &quot;head&quot;: 0,
+      &quot;query_id&quot;: &quot;x&quot;,
+      &quot;key_id&quot;: &quot;y&quot;,
+      &quot;query_index&quot;: 0,
+      &quot;key_index&quot;: 1
+    }
+  ],
+  &quot;violation_count&quot;: 1,
+  &quot;findings_truncated&quot;: false,
+  &quot;coverage&quot;: {
+    &quot;backend&quot;: &quot;mha&quot;,
+    &quot;batch_size&quot;: 1,
+    &quot;heads&quot;: 1,
+    &quot;length&quot;: 2,
+    &quot;total_cells&quot;: 4,
+    &quot;checked_cells&quot;: 4,
+    &quot;constrained_cells&quot;: 4,
+    &quot;complete_relation_contract&quot;: true,
+    &quot;nonempty_queries&quot;: 2,
+    &quot;unconstrained_cells&quot;: 0,
+    &quot;tile_size&quot;: 128,
+    &quot;largest_tile_cells&quot;: 4,
+    &quot;sampling&quot;: false,
+    &quot;max_evidence&quot;: 16
+  },
+  &quot;preview&quot;: {
+    &quot;batch&quot;: 0,
+    &quot;head&quot;: 0,
+    &quot;ids&quot;: [
+      &quot;x&quot;,
+      &quot;y&quot;
+    ],
+    &quot;visible&quot;: [
+      [
+        true,
+        false
+      ],
+      [
+        true,
+        true
+      ]
+    ],
+    &quot;expected&quot;: [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    &quot;truncated&quot;: false
+  },
+  &quot;counts&quot;: {
+    &quot;forbidden_edge&quot;: 0,
+    &quot;missing_edge&quot;: 1,
+    &quot;empty_query&quot;: 0
+  },
+  &quot;evidence&quot;: [
+    {
+      &quot;finding_index&quot;: 0,
+      &quot;batch&quot;: 0,
+      &quot;head&quot;: 0,
+      &quot;query_indices&quot;: [
+        0,
+        1
+      ],
+      &quot;key_indices&quot;: [
+        0,
+        1
+      ],
+      &quot;query_ids&quot;: [
+        &quot;x&quot;,
+        &quot;y&quot;
+      ],
+      &quot;key_ids&quot;: [
+        &quot;x&quot;,
+        &quot;y&quot;
+      ],
+      &quot;expected&quot;: [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      &quot;visible&quot;: [
+        [
+          true,
+          false
+        ],
+        [
+          true,
+          true
+        ]
+      ]
+    }
+  ],
+  &quot;evidence_truncated&quot;: false,
+  &quot;source&quot;: {
+    &quot;kind&quot;: &quot;explicit local inputs&quot;,
+    &quot;contract_sha256&quot;: &quot;1a748959e7ee03f5b364599653738d0515dcdadf06087835d216e3a3b530ebf5&quot;,
+    &quot;mask_sha256&quot;: &quot;5429524e6f981361fb413375744654e225ec80766454725f3cfd9180ba7c54bd&quot;,
+    &quot;padding_sha256&quot;: &quot;32e385ce2d92ff7e7718f2adbf94f90d65866c6517aa226a8099efefb9f1db46&quot;
+  }
+}</pre></details>
+<footer class="footer"><button class="download" id="download">Download report JSON</button><p>AttnWitness · offline report · synthetic examples are not model-quality benchmarks.</p></footer>
+</main><script>
+document.querySelectorAll('[data-message]').forEach(function(cell){cell.addEventListener('click',function(){document.getElementById('inspector').textContent=cell.dataset.message;});});
+var witnesses=Array.prototype.slice.call(document.querySelectorAll('[data-witness]'));
+function selectWitness(button){var id=button.dataset.witness;witnesses.forEach(function(b){var on=b===button;b.setAttribute('aria-expanded',String(on));});document.querySelectorAll('[data-witness-panel]').forEach(function(panel){panel.hidden=panel.dataset.witnessPanel!==id;});var empty=document.getElementById('witness-empty');if(empty){empty.hidden=true;}var panel=document.getElementById('witness-'+id);if(panel){panel.scrollIntoView({block:'nearest'});}}
+witnesses.forEach(function(button){button.addEventListener('click',function(){selectWitness(button);});});
+document.querySelectorAll('[data-filter]').forEach(function(button){button.addEventListener('click',function(){document.querySelectorAll('[data-filter]').forEach(function(b){b.setAttribute('aria-pressed',String(b===button));});var kind=button.dataset.filter;document.querySelectorAll('.finding').forEach(function(row){row.hidden=kind!=='all'&&row.dataset.category!==kind;});var kept=false;witnesses.forEach(function(b){if(b.hidden){b.setAttribute('aria-expanded','false');var panel=document.getElementById('witness-'+b.dataset.witness);if(panel){panel.hidden=true;}}else{kept=true;}});var empty=document.getElementById('witness-empty');if(empty){empty.hidden=kept;}var note=document.getElementById('witness-count');if(note){note.textContent=kept?'':'No retained witness is shown under this filter; the category counts beside each filter are totals from the audit, not display counts.';}});});
+document.getElementById('download').addEventListener('click',function(){var text=document.getElementById('report-json').textContent;var u=URL.createObjectURL(new Blob([text],{type:'application/json'}));var a=document.createElement('a');a.href=u;a.download='attnwitness-report.json';a.click();setTimeout(function(){URL.revokeObjectURL(u);},1000);});
+</script></body></html>

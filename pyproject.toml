@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "attnwitness"
-version = "0.1.0"
+version = "0.2.0"
 description = "Independent attention-mask contracts with concrete visibility witnesses"
 readme = "README.md"
 requires-python = ">=3.10"

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0
+
+- MHA floating attention and key-padding masks are summed in their declared dtype before hard-visibility classification, matching actual backend composition; overflow to `-inf` blocks, while `NaN` and positive infinity make the input invalid. Mixed floating dtypes are rejected rather than guessed.
+- Output publication uses same-directory staging plus atomic exclusive create or entry replacement. Hard links to inputs are detected by file identity, and a file created after preflight is not overwritten without `--force`.
+- The relation check runs in bounded tiles with exact counters and deterministic global witness order. Large logical broadcasts no longer require an equally large expanded mask or `argwhere` array.
+- Retained findings carry original-coordinate context windows for their own batch and head, including late witnesses outside the legacy preview; empty-query windows record how many keys were checked.
+- Finding and evidence truncation are reported separately. CLI exposes bounded `--tile-size`, `--max-evidence`, `--window-radius` and `--max-findings` options.
+- Generated examples cover prefix visibility, combined float overflow and a late batch/head witness.
+
 ## 0.1.0
 
 - Independent causal, packed, prefix and partial visibility contracts.

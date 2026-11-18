@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "scope": "Hard visibility under the declared contract, not model or training correctness.",
+  "findings": [],
+  "violation_count": 0,
+  "findings_truncated": false,
+  "coverage": {
+    "backend": "sdpa",
+    "batch_size": 1,
+    "heads": 1,
+    "length": 3,
+    "total_cells": 9,
+    "checked_cells": 9,
+    "constrained_cells": 9,
+    "complete_relation_contract": true,
+    "nonempty_queries": 3,
+    "unconstrained_cells": 0,
+    "tile_size": 128,
+    "largest_tile_cells": 9,
+    "sampling": false,
+    "max_evidence": 16
+  },
+  "preview": {
+    "batch": 0,
+    "head": 0,
+    "ids": [
+      "prefix-0",
+      "prefix-1",
+      "completion"
+    ],
+    "visible": [
+      [
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        true
+      ]
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        -1
+      ],
+      [
+        1,
+        1,
+        -1
+      ],
+      [
+        1,
+        1,
+        1
+      ]
+    ],
+    "truncated": false
+  },
+  "counts": {
+    "forbidden_edge": 0,
+    "missing_edge": 0,
+    "empty_query": 0
+  },
+  "evidence": [],
+  "evidence_truncated": false,
+  "source": {
+    "kind": "explicit local inputs",
+    "contract_sha256": "e06e30df2535855a200bfbb5f37e15909b1589213d3bb783eb42acdf8f6e22cc",
+    "mask_sha256": "5cd0e88e0987c5173de8ad85c61e2b8fcb4e14a952c4f7ebee6c177188aa9b8a",
+    "padding_sha256": null
+  }
+}

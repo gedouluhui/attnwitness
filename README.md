@@ -6,7 +6,7 @@
 
 AttnWitness checks an actual attention mask against separately declared token visibility. It returns concrete query–key witnesses, an offline interactive evidence grid, and a bounded counterexample reducer.
 
-No model download, GPU or API key is needed. Experimental v0.1: this is a **hard-visibility contract checker**, not a proof of model quality or whole-model causality.
+No model download, GPU or API key is needed. Experimental v0.2: this is a **hard-visibility contract checker**, not a proof of model quality or whole-model causality.
 
 [Open the recorded demo](https://gedouluhui.github.io/attnwitness/) · [中文快速开始](README.zh-CN.md) · [Verification scope](docs/VALIDATION.md)
 
@@ -58,7 +58,7 @@ python examples/make_mask.py
 attnwitness check examples/causal.json examples/causal.npy --html custom.html
 ```
 
-The explicit input is bounded JSON plus a numeric NPY file (formats 1.0/2.0, no pickle/object arrays). The input fingerprint is computed from the same bytes that are actually loaded. Output paths cannot overwrite either input.
+The explicit input is bounded JSON plus a numeric NPY file (formats 1.0/2.0, no pickle/object arrays). The input fingerprint is computed from the same bytes that are actually loaded. Output paths cannot overwrite either input, including through a hard link, and without `--force` a file created after preflight is not overwritten.
 
 For batched input, `tokens` contains one token list per batch; `batch_size` and `heads` are explicit JSON fields. A missing mask argument is permitted only as an explicit no-mask case; an optional `is_causal` field is still interpreted and validated.
 
@@ -116,9 +116,9 @@ Callables are trusted code, not sandboxed. This mode is limited to 1–64 tokens
 | Missing data / MaskedArray / unsupported subclass | Reject, do not silently fill |
 | Empty query row | Violation only if the declaration requires it nonempty |
 
-Square CPU self-attention only. MHA requires explicit masks and `is_causal=False`; causal hints are not modeled. KV-cache, cross-attention, NestedTensor and GPU-kernel correctness are outside v0.1. An allowed empty row does **not** imply numerical safety.
+Square CPU self-attention only. MHA requires explicit masks and `is_causal=False`; causal hints are not modeled. When MHA attention and key-padding masks are both floating point, they are summed in their declared dtype before visibility is classified, matching the real backend merge; overflow to `-inf` blocks, while `NaN` and positive infinity are invalid. Mixed floating dtypes are rejected. KV-cache, cross-attention, NestedTensor and GPU-kernel correctness are outside v0.2. An allowed empty row does **not** imply numerical safety.
 
-Default expanded-relation budget: 1,048,576 cells. CLI file loading permits `--max-cells` in 1..16,777,216; values outside that range are input errors. Shape compatibility is checked before elementwise allocation. Finding and preview caps do not cap the total violation count. CLI exit codes: 0 PASS, 1 VIOLATION, 2 invalid/unsupported/error.
+Default expanded-relation budget: 1,048,576 cells. Work runs in bounded tiles (`--tile-size`, default 128) so the largest temporary tile, not the full logical relation, controls working memory. CLI file loading permits `--max-cells` in 1..16,777,216; values outside that range are input errors. Shape compatibility is checked before elementwise allocation. Finding and preview caps do not cap the total violation count. Retained findings include original-coordinate context windows (`--max-evidence`, `--window-radius`) for their own batch and head; evidence truncation is reported separately from finding truncation. CLI exit codes: 0 PASS, 1 VIOLATION, 2 invalid/unsupported/error.
 
 ## Tests and comparisons
 

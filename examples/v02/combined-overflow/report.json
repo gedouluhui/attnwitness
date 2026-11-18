@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "status": "VIOLATION",
+  "scope": "Hard visibility under the declared contract, not model or training correctness.",
+  "findings": [
+    {
+      "category": "missing_edge",
+      "batch": 0,
+      "head": 0,
+      "query_id": "x",
+      "key_id": "y",
+      "query_index": 0,
+      "key_index": 1
+    }
+  ],
+  "violation_count": 1,
+  "findings_truncated": false,
+  "coverage": {
+    "backend": "mha",
+    "batch_size": 1,
+    "heads": 1,
+    "length": 2,
+    "total_cells": 4,
+    "checked_cells": 4,
+    "constrained_cells": 4,
+    "complete_relation_contract": true,
+    "nonempty_queries": 2,
+    "unconstrained_cells": 0,
+    "tile_size": 128,
+    "largest_tile_cells": 4,
+    "sampling": false,
+    "max_evidence": 16
+  },
+  "preview": {
+    "batch": 0,
+    "head": 0,
+    "ids": [
+      "x",
+      "y"
+    ],
+    "visible": [
+      [
+        true,
+        false
+      ],
+      [
+        true,
+        true
+      ]
+    ],
+    "expected": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "truncated": false
+  },
+  "counts": {
+    "forbidden_edge": 0,
+    "missing_edge": 1,
+    "empty_query": 0
+  },
+  "evidence": [
+    {
+      "finding_index": 0,
+      "batch": 0,
+      "head": 0,
+      "query_indices": [
+        0,
+        1
+      ],
+      "key_indices": [
+        0,
+        1
+      ],
+      "query_ids": [
+        "x",
+        "y"
+      ],
+      "key_ids": [
+        "x",
+        "y"
+      ],
+      "expected": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "visible": [
+        [
+          true,
+          false
+        ],
+        [
+          true,
+          true
+        ]
+      ]
+    }
+  ],
+  "evidence_truncated": false,
+  "source": {
+    "kind": "explicit local inputs",
+    "contract_sha256": "1a748959e7ee03f5b364599653738d0515dcdadf06087835d216e3a3b530ebf5",
+    "mask_sha256": "5429524e6f981361fb413375744654e225ec80766454725f3cfd9180ba7c54bd",
+    "padding_sha256": "32e385ce2d92ff7e7718f2adbf94f90d65866c6517aa226a8099efefb9f1db46"
+  }
+}

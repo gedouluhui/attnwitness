@@ -7,12 +7,14 @@ import math
 from pathlib import Path
 import sys
 import numpy as np
-from .audit import audit
+from .audit import (audit, bounded_int, TILE_SIZE_RANGE, MAX_EVIDENCE_RANGE,
+                    WINDOW_RADIUS_RANGE, MAX_FINDINGS_RANGE)
 from .contracts import ContractError, Policy, Token
 from .report import render_report
+from .outputs import validate_outputs, publish_reports
 
 
-def demo(case):
+def demo(case, **options):
     if case == 'prefix':
         tokens = [Token('prefix-0', 'doc', 0, prefix=True), Token('prefix-1', 'doc', 1, prefix=True),
                   Token('completion', 'doc', 2)]
@@ -26,9 +28,18 @@ def demo(case):
         mask = np.array([[True, False], [True, True]])
         if case == 'float-mask':
             mask = mask.astype(np.float32)
-    result = audit(mask, policy).to_dict()
+    result = audit(mask, policy, **options).to_dict()
     result['source'] = {'kind': 'bundled synthetic example', 'case': case}
     return result
+
+
+def _options(args):
+    bounded_int(args.tile_size, 'tile_size', *TILE_SIZE_RANGE)
+    bounded_int(args.max_evidence, 'max_evidence', *MAX_EVIDENCE_RANGE)
+    bounded_int(args.window_radius, 'window_radius', *WINDOW_RADIUS_RANGE)
+    bounded_int(args.max_findings, 'max_findings', *MAX_FINDINGS_RANGE)
+    return {'tile_size': args.tile_size, 'max_evidence': args.max_evidence,
+            'window_radius': args.window_radius, 'max_findings': args.max_findings}
 
 
 def _load_spec(path):
@@ -61,13 +72,13 @@ def _load_spec(path):
     return policy, kwargs, hashlib.sha256(raw).hexdigest()
 
 
-def _load_mask(path, max_cells):
+def _load_mask(path, max_cells, label='mask'):
     path = Path(path)
     byte_limit = max_cells * 8 + 4224
     with path.open('rb') as source:
         raw = source.read(byte_limit + 1)
     if len(raw) > byte_limit:
-        raise ContractError('mask file exceeds its byte budget')
+        raise ContractError(f'{label} file exceeds its byte budget')
     stream = io.BytesIO(raw)
     version = np.lib.format.read_magic(stream)
     if version == (1, 0):
@@ -77,25 +88,19 @@ def _load_mask(path, max_cells):
     else:
         raise ContractError('only numeric NPY format 1.0/2.0 inputs are supported')
     if dtype.kind not in 'bf' or dtype.itemsize > 8 or not 2 <= len(shape) <= 4:
-        raise ContractError('mask NPY must contain a 2D..4D boolean/float array, never objects')
+        raise ContractError(f'{label} NPY must contain a 2D..4D boolean/float array, never objects')
     if any(type(d) is not int or d < 1 for d in shape) or math.prod(shape) > max_cells:
-        raise ContractError('mask NPY exceeds cell budget or has empty dimensions')
+        raise ContractError(f'{label} NPY exceeds cell budget or has empty dimensions')
     expected_size = stream.tell() + math.prod(shape) * dtype.itemsize
     if len(raw) != expected_size:
-        raise ContractError('mask NPY byte length does not match its header')
+        raise ContractError(f'{label} NPY byte length does not match its header')
     stream.seek(0)
     mask = np.load(stream, allow_pickle=False, max_header_size=4096)
     return mask, hashlib.sha256(raw).hexdigest()
 
 
 def _outputs(args, inputs=()):
-    destinations = [Path(p).resolve() for p in (args.json, args.html) if p]
-    forbidden = {Path(p).resolve() for p in inputs if p}
-    if len(set(destinations)) != len(destinations) or forbidden.intersection(destinations):
-        raise ContractError('output paths must be distinct and must not overwrite inputs')
-    for path in destinations:
-        if not path.parent.is_dir() or (path.exists() and not args.force):
-            raise ContractError('output parent must exist; use --force to replace a prior report')
+    validate_outputs([p for p in (args.json, args.html) if p], inputs=inputs, force=args.force)
 
 
 def main(argv=None):
@@ -105,27 +110,41 @@ def main(argv=None):
     demo_parser.add_argument('--case', choices=['causal', 'float-mask', 'packed', 'prefix'], default='float-mask')
     check = sub.add_parser('check', help='audit explicit contract JSON and optional numeric NPY mask')
     check.add_argument('spec'); check.add_argument('mask', nargs='?')
+    check.add_argument('--key-padding', help='optional MHA key-padding mask NPY of shape (B, L)')
     check.add_argument('--max-cells', type=int, default=1048576)
     for command in (demo_parser, check):
         command.add_argument('--json'); command.add_argument('--html')
         command.add_argument('--force', action='store_true')
+        command.add_argument('--tile-size', type=int, default=128)
+        command.add_argument('--max-evidence', type=int, default=16)
+        command.add_argument('--window-radius', type=int, default=3)
+        command.add_argument('--max-findings', type=int, default=128)
     args = parser.parse_args(argv)
     try:
-        _outputs(args, (getattr(args, 'spec', None), getattr(args, 'mask', None)))
+        options = _options(args)
+        inputs = (getattr(args, 'spec', None), getattr(args, 'mask', None),
+                  getattr(args, 'key_padding', None))
+        _outputs(args, inputs)
         if args.command == 'demo':
-            result = demo(args.case)
+            result = demo(args.case, **options)
         else:
             if not 1 <= args.max_cells <= 16777216:
                 raise ContractError('max-cells must be in 1..16777216 for CLI file loading')
             policy, kwargs, contract_sha = _load_spec(args.spec)
             mask, mask_sha = (None, None) if args.mask is None else _load_mask(args.mask, args.max_cells)
-            result = audit(mask, policy, max_cells=args.max_cells, **kwargs).to_dict()
-            result['source'] = {'kind': 'explicit local inputs', 'contract_sha256': contract_sha, 'mask_sha256': mask_sha}
+            padding, padding_sha = ((None, None) if args.key_padding is None else
+                                    _load_mask(args.key_padding, args.max_cells, 'key-padding mask'))
+            result = audit(mask, policy, max_cells=args.max_cells, key_padding_mask=padding,
+                           **options, **kwargs).to_dict()
+            result['source'] = {'kind': 'explicit local inputs', 'contract_sha256': contract_sha,
+                                'mask_sha256': mask_sha, 'padding_sha256': padding_sha}
         text = json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False)
+        reports = []
         if args.json:
-            Path(args.json).write_text(text + '\n', encoding='utf-8', newline='\n')
+            reports.append((args.json, text + '\n'))
         if args.html:
-            Path(args.html).write_text(render_report(result), encoding='utf-8', newline='\n')
+            reports.append((args.html, render_report(result)))
+        publish_reports(reports, inputs=inputs, force=args.force)
         print(json.dumps(result, ensure_ascii=True, allow_nan=False))
         return 0 if result['status'] == 'PASS' else 1
     except (ContractError, OSError, ValueError, TypeError, UnicodeError) as exc:

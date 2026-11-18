@@ -1,0 +1,22 @@
+{
+  "mode": "prefix",
+  "tokens": [
+    {
+      "id": "prefix-0",
+      "segment": "document",
+      "position": 0,
+      "prefix": true
+    },
+    {
+      "id": "prefix-1",
+      "segment": "document",
+      "position": 1,
+      "prefix": true
+    },
+    {
+      "id": "completion",
+      "segment": "document",
+      "position": 2
+    }
+  ]
+}

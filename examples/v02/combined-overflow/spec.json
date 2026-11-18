@@ -1,0 +1,18 @@
+{
+  "mode": "bidirectional",
+  "backend": "mha",
+  "batch_size": 1,
+  "heads": 1,
+  "tokens": [
+    {
+      "id": "x",
+      "segment": "document",
+      "position": 0
+    },
+    {
+      "id": "y",
+      "segment": "document",
+      "position": 1
+    }
+  ]
+}

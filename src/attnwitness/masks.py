@@ -46,7 +46,13 @@ def normalize_mask(mask, *, backend, batch_size, heads, length, is_causal, key_p
         padding = plain_array(key_padding_mask, 'key_padding_mask')
         if padding.shape != (batch_size, length):
             raise ContractError('key_padding_mask must have shape (B,L)')
-        if array is not None and padding.dtype.kind != array.dtype.kind:
-            raise ContractError('MHA attention and padding mask encodings must match')
-        visible = visible & _visible(padding, 'mha')[:, None, None, :]
+        if array is not None and padding.dtype != array.dtype:
+            raise ContractError('MHA attention and padding mask dtypes must match')
+        padding_visible = _visible(padding, 'mha')[:, None, None, :]
+        if array is not None and array.dtype.kind == 'f':
+            with np.errstate(over='ignore', invalid='ignore'):
+                combined = np.add(array, padding[:, None, None, :], dtype=array.dtype)
+            visible = _visible(combined, 'mha')
+        else:
+            visible = visible & padding_visible
     return visible
