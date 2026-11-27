@@ -135,3 +135,34 @@ PyTorch executes masks; Transformers and Attention Gym already provide powerful 
 ## License
 
 Original code: MIT. NumPy and optional PyTorch keep their own licenses. Dependency binaries, model weights and private training data are not bundled.
+
+## Quickstart and support
+
+### Problem
+Check an actual attention mask against separately declared token visibility and return concrete query-key witnesses.
+
+### Install
+```sh
+python -m pip install .
+```
+
+### Success
+```sh
+attnwitness demo --case causal --html correct.html
+```
+Expected: The causal contract passes and exits 0.
+
+### Deliberate failure
+```sh
+attnwitness demo --case float-mask --json evidence.json --html evidence.html
+```
+Expected: The forbidden visible edge is reported as VIOLATION and exits 1.
+
+### Evidence and coverage boundaries
+Evidence includes hand-calculated relations, actual CPU SDPA/MHA calls, missing-data and allocation-order regressions, HTML injection checks, file fingerprint binding, and temporary-copy mutations. Coverage is square CPU self-attention under the documented mask encodings, not model quality or whole-model causality.
+
+### Support status
+Version 0.2.1 supports Python 3.10+ and NumPy 2+; the optional torch adapter requires an appropriate CPU torch build. This is experimental v0.2 and is not claimed to be on PyPI. Maintenance is best-effort with no SLA.
+
+### Limitations
+KV-cache, cross-attention, NestedTensor, GPU kernels, causal hints, and tensor subclasses are outside scope. The default expanded-relation budget is 1,048,576 cells; finding and preview caps do not cap the total violation count.

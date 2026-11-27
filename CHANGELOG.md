@@ -1,5 +1,9 @@
 # Changelog
 
+
+## Unreleased
+
+- Align public governance, bilingual quickstarts, issue templates, and documentation validation.
 ## 0.2.1
 
 - Checkout recorded examples with LF line endings on every platform so the byte-for-byte reproduction test also passes on Windows CI. No runtime behavior changed from 0.2.0.
