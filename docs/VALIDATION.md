@@ -10,9 +10,31 @@ python -m unittest discover -s tests -v
 python -m build
 ```
 
-The suite checks independently specified causal/packed/prefix relations, boolean encoding polarity, additive-mask semantics, per-batch/head identity, partial coverage, empty-row policy, rejection before large array operations, real CPU SDPA/MHA effects, reducer identity and budget behavior, report injection handling, CLI exit codes, input preservation and the binding of fingerprints to loaded bytes. The 0.2 additions cover floating MHA attention plus key-padding summation against an actual `MultiheadAttention` call, positive-overflow rejection, mixed-dtype rejection, tiled exact counts across tile sizes, late out-of-preview witnesses with their own batch/head context, exact counters under an evidence cap, broadcast workloads without full expanded temporaries, and real hard-link/race publication controls.
+The suite checks independently specified causal/packed/prefix relations, boolean encoding polarity, additive-mask semantics, per-batch/head identity, partial coverage, empty-row policy, rejection before large array operations, real CPU SDPA/MHA effects, reducer identity and budget behavior, report injection handling, CLI exit codes, input preservation and the binding of fingerprints to loaded bytes. The 0.2 additions cover floating MHA attention plus key-padding summation against an actual `MultiheadAttention` call, positive-overflow rejection, mixed-dtype rejection, tiled exact counts across tile sizes, late out-of-preview witnesses with their own batch/head context, exact counters under an evidence cap, broadcast workloads without full expanded temporaries, and real hard-link/race publication controls. The compatibility branch adds a 4,194,304-cell broadcast relation that must raise `ContractError` before either relation implementation is constructed.
 
 Mutation checks operate only on temporary source copies. A baseline must pass; the intended edit must be unique and nonempty; the mutated run must fail at a named behavioral assertion. A syntax/import error is not accepted as catching a silent bug.
+
+## Compatibility matrix
+
+The v0.2.1 public contract declares Python `>=3.10` and NumPy `>=2.0`; the optional torch adapter uses the installed torch build. The current branch configures the following CI matrix, installing the package before the suite and building both distributions in every job:
+
+| Python | Ubuntu | Windows |
+|---|---|---|
+| 3.10 | Configured | Configured |
+| 3.11 | Configured | Configured |
+| 3.12 | Configured | Configured |
+
+Checkout and setup-python Actions are pinned to full commit SHAs (`actions/checkout` v4.2.2 and `actions/setup-python` v5.6.0). This is a statement of configured coverage, not a claim that six remote jobs have passed. The local task verification ran Python 3.12.3 on Windows with NumPy 2.4.6 and torch 2.12.0 CPU: the focused broadcast-budget regression passed and all 69 tests passed in 10.874 seconds. The wheel and sdist both built successfully at version 0.2.1. Python 3.10/3.11, Linux, and the remote matrix remain evidence gaps until their jobs run. The older four-job release evidence below remains valid only for its recorded tag and does not supply Python 3.10 coverage.
+
+## What the proof does and does not cover
+
+A completed audit checks every logical cell exactly once: `checked_cells == total_cells == batch_size * heads * length²`, with `sampling=false`. The full logical relation must fit `max_cells` before expected or actual relation setup, even when the input mask uses broadcasting. Rejection is not a PASS. Accepted work uses relation tiles of at most `tile_size²` cells per batch/head; this is not a total-memory bound on caller-owned arrays, intermediate/aggregate outputs or retained evidence. Tiling changes neither exact counts nor the verdict.
+
+A PASS with `complete_relation_contract=true` covers every declared cell and is complete for that hard-visibility contract only. With a partial `MatrixContract`, `0` cells are unconstrained: PASS covers only constrained cells and is reported by `complete_relation_contract=false`. Neither form validates model quality, training correctness or whole-model causality.
+
+The `preview` is capped to batch/head 0 and the first 16 positions; `preview.truncated` exposes omissions. `max_findings` caps stored findings, while `violation_count` and per-category `counts` remain exact. `max_evidence` separately caps retained context windows and `evidence_truncated` compares their number with retained findings. Neither cap limits cells scanned. Empty-query evidence retains a full-row summary even when its displayed context window is small. See the README evidence/reduction table for defaults and accepted ranges.
+
+`reduce_case` is bounded to one sequence of 1..64 tokens and trusted deterministic callbacks. The initial reproduction and each single-token deletion attempt consume one call before user code runs. Exhaustion preserves the last verified witness with `complete=false` and no minimality claim. A completed result is 1-minimal only for nonempty single-token deletions with original IDs, segments, positions and prefix roles retained; it is not globally minimal or a minimized builder program.
 
 ## Review provenance
 

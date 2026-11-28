@@ -120,6 +120,18 @@ Square CPU self-attention only. MHA requires explicit masks and `is_causal=False
 
 Default expanded-relation budget: 1,048,576 cells. Work runs in bounded tiles (`--tile-size`, default 128) so the largest temporary tile, not the full logical relation, controls working memory. CLI file loading permits `--max-cells` in 1..16,777,216; values outside that range are input errors. Shape compatibility is checked before elementwise allocation. Finding and preview caps do not cap the total violation count. Retained findings include original-coordinate context windows (`--max-evidence`, `--window-radius`) for their own batch and head; evidence truncation is reported separately from finding truncation. CLI exit codes: 0 PASS, 1 VIOLATION, 2 invalid/unsupported/error.
 
+### Evidence and reduction limits
+
+| Control or result | v0.2.1 limit and meaning |
+|---|---|
+| Full relation | `batch_size * heads * length²` logical cells must fit `max_cells` (default 1,048,576; Python API accepts any positive integer, CLI check accepts 1..16,777,216). Over-budget input raises `ContractError` before expected/actual relation setup; a broadcast mask does not evade this budget. The supplied input array itself is not a full-relation allocation by the checker. |
+| Tiled audit | Every accepted logical cell is checked exactly once in relation tiles of at most `tile_size²` cells per batch/head (default 128; range 1..1024). Tiling bounds each relation tile, not total working memory, caller-owned input memory or aggregate output. `sampling` is false and `checked_cells` equals `total_cells` on completion. |
+| Preview cap | `preview` shows only batch 0, head 0 and the first `min(length, 16)` query/key positions. `preview.truncated` records omitted batches, heads or positions. Preview omission never changes detection or PASS/VIOLATION. |
+| Evidence cap | `max_evidence` retains context windows for at most the first 0..128 ordered findings (default 16), each within `window_radius` 0..8 around its own query/key (default 3). Empty-query evidence summarizes the entire row. `evidence_truncated` compares retained windows with retained findings; `max_evidence=0` still performs the complete audit. |
+| Finding cap | `max_findings` retains at most 1..4096 findings (default 128), across categories. `violation_count` and `counts` remain exact over the complete relation; `findings_truncated` reports omitted findings. Caps bound stored examples, not scanned cells. |
+| Reducer budget | `reduce_case` accepts 1..64 tokens in one sequence and `max_calls` ≥ 1 (default 256). The initial witness costs one call, every single-token deletion attempt costs one call before invoking trusted callbacks, and the first accepted deletion restarts the scan. Budget exhaustion returns the last verified violating case with `complete=false` and `minimality=null`; no minimality is claimed. |
+| Complete PASS vs minimized witness | PASS means no violation in every checked cell under the declared contract. It is complete contract validation only when `complete_relation_contract=true` (no unconstrained cells); a partial `MatrixContract` can pass its constrained cells while `0` cells remain unknown. A completed reducer result is only **1-minimal under nonempty single-token deletions** for trusted deterministic callbacks, not globally minimal and not a minimized program. Neither result proves model quality or whole-model causality. |
+
 ## Tests and comparisons
 
 ```sh
