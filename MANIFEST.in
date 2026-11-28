@@ -1,0 +1,9 @@
+include README.md README.zh-CN.md LICENSE CONTRIBUTING.md CHANGELOG.md SECURITY.md CODE_OF_CONDUCT.md
+include docs/VALIDATION.md docs/validation-v0.2.2.md docs/example-report.json docs/index.html
+include scripts/check_docs.py
+recursive-include tests *.py *.json
+recursive-include examples *.json *.npy
+prune docs/superpowers
+prune .venv
+prune build
+prune dist

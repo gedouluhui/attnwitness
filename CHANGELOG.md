@@ -3,7 +3,13 @@
 
 ## Unreleased
 
-- Align public governance, bilingual quickstarts, issue templates, and documentation validation.
+## 0.2.2 — 2026-11-28
+
+- Exercise Python 3.10/3.11/3.12 on Ubuntu and Windows with immutable Action pins and both distribution builds.
+- Reject broadcast-budget violations before relation construction and document the checker-side tiling memory boundary.
+- Align public governance, bilingual quickstarts, issue templates, documentation validation, and current release evidence.
+- Current source version. Supported scope and limitations are documented in [README.md](README.md) and [validation](docs/validation-v0.2.2.md).
+
 ## 0.2.1
 
 - Checkout recorded examples with LF line endings on every platform so the byte-for-byte reproduction test also passes on Windows CI. No runtime behavior changed from 0.2.0.

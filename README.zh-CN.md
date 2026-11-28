@@ -80,7 +80,7 @@ attnwitness demo --case float-mask --json evidence.json --html evidence.html
 证据包括手算关系、真实 CPU SDPA/MHA 调用、缺失数据与分配顺序回归、HTML 注入检查、文件指纹绑定和临时副本变异。覆盖范围是文档化掩码编码下的方形 CPU 自注意力，不是模型质量或整个模型的因果性。
 
 ### 支持状态
-版本 0.2.1 支持 Python 3.10+ 和 NumPy 2+；可选 torch 适配器需要合适的 CPU torch 构建。这是实验性 v0.2，不声称已发布到 PyPI。维护为尽力而为，不提供 SLA。
+版本 0.2.2 支持 Python 3.10+ 和 NumPy 2+；可选 torch 适配器需要合适的 CPU torch 构建。这是实验性 v0.2，不声称已发布到 PyPI。维护为尽力而为，不提供 SLA。
 
 ### 限制
 不支持 KV-cache、交叉注意力、NestedTensor、GPU kernel、causal hint 和张量子类。默认展开关系预算为 1,048,576 个单元格；发现与预览上限不限制违规总数。

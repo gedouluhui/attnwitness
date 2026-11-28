@@ -122,7 +122,7 @@ Default expanded-relation budget: 1,048,576 cells. Work runs in bounded tiles (`
 
 ### Evidence and reduction limits
 
-| Control or result | v0.2.1 limit and meaning |
+| Control or result | v0.2.2 limit and meaning |
 |---|---|
 | Full relation | `batch_size * heads * length²` logical cells must fit `max_cells` (default 1,048,576; Python API accepts any positive integer, CLI check accepts 1..16,777,216). Over-budget input raises `ContractError` before expected/actual relation setup; a broadcast mask does not evade this budget. The supplied input array itself is not a full-relation allocation by the checker. |
 | Tiled audit | Every accepted logical cell is checked exactly once in relation tiles of at most `tile_size²` cells per batch/head (default 128; range 1..1024). Tiling bounds each relation tile, not total working memory, caller-owned input memory or aggregate output. `sampling` is false and `checked_cells` equals `total_cells` on completion. |
@@ -174,7 +174,7 @@ Expected: The forbidden visible edge is reported as VIOLATION and exits 1.
 Evidence includes hand-calculated relations, actual CPU SDPA/MHA calls, missing-data and allocation-order regressions, HTML injection checks, file fingerprint binding, and temporary-copy mutations. Coverage is square CPU self-attention under the documented mask encodings, not model quality or whole-model causality.
 
 ### Support status
-Version 0.2.1 supports Python 3.10+ and NumPy 2+; the optional torch adapter requires an appropriate CPU torch build. This is experimental v0.2 and is not claimed to be on PyPI. Maintenance is best-effort with no SLA.
+Version 0.2.2 supports Python 3.10+ and NumPy 2+; the optional torch adapter requires an appropriate CPU torch build. This is experimental v0.2 and is not claimed to be on PyPI. Maintenance is best-effort with no SLA.
 
 ### Limitations
 KV-cache, cross-attention, NestedTensor, GPU kernels, causal hints, and tensor subclasses are outside scope. The default expanded-relation budget is 1,048,576 cells; finding and preview caps do not cap the total violation count.
