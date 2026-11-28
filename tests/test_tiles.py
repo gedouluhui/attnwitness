@@ -56,6 +56,16 @@ class TileTests(unittest.TestCase):
         self.assertTrue(r.to_dict()['evidence_truncated'])
         self.assertEqual(r.coverage['checked_cells'], 256)
 
+    def test_broadcast_budget_rejects_before_full_relation_materialization(self):
+        from importlib import import_module
+        audit_module = import_module('attnwitness.audit')
+        policy = Policy([Token(str(i), 'doc', i) for i in range(2048)])
+        mask = np.ones((1, 1, 2048, 2048), dtype=bool)
+        with (patch.object(audit_module, 'ExpectedRelation', side_effect=AssertionError('relation setup')),
+              patch.object(audit_module, 'ActualMask', side_effect=AssertionError('mask setup'))):
+            with self.assertRaisesRegex(ContractError, 'expanded relation needs 4194304 cells'):
+                audit(mask, policy, max_cells=1_000_000)
+
     def test_broadcast_workload_does_not_create_full_relation_temporaries(self):
         import attnwitness.masks as masks
         n = 512; p = Policy([Token(str(i), 's', i) for i in range(n)])
